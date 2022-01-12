@@ -1,5 +1,16 @@
 # Tutorial: Developing a GraphQL API with Ballerina
 
+## Table of Contents
+- [Tutorial: Developing a GraphQL API with Ballerina](#tutorial-developing-a-graphql-api-with-ballerina)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Design the GraphQL endpoint](#design-the-graphql-endpoint)
+  - [Create a Ballerina Project](#create-a-ballerina-project)
+  - [Create a Datasource for the Project](#create-a-datasource-for-the-project)
+  - [Write Ballerina service](#write-ballerina-service)
+    - [Create GraphQL Object Types](#create-graphql-object-types)
+    - [Writing the GraphQL service](#writing-the-graphql-service)
+
 This simple guide helps you understand the basics of Ballerina constructs which allow you to write GraphQL APIs.
 
 Due to the batteries included nature of the Ballerina language there is no need to add any third party libraries to
@@ -15,8 +26,8 @@ This tutorial includes the following steps:
 2. Create the Covid-19 dataset
 3. Write the GraphQL service to:
     - Get all the Covid-19 data
-    - Add Covid-19 data
     - Filter Covid-19 data using the `isoCode`
+    - Add Covid-19 data
 
 ## Prerequisites
 
@@ -85,10 +96,9 @@ Now that we have the design, we can create the project.
     ```shell
     bal new covid19
    ```
-
 This will create a new Ballerina project inside a directory named `covid19`.
 
-## Create Data for the Project
+## Create a Datasource for the Project
 
 Before writing the GraphQL service, we are going to create a data source for out project. This will mimic a database
 where we store the data for our service. Use the following command to create a new module inside the Ballerina project.
@@ -311,15 +321,15 @@ resource function get filterData(string isoCode) returns CovidData? {
 }
 ```
 
-In the above resource method, we define the `filterData` field in the root `Query` type. Since this field has an 
-input parameter `isoCode`, we have to add an input parameter to the resource method. Then using the previously 
+In the above resource method, we define the `filterData` field in the root `Query` type. Since this field has an
+input parameter `isoCode`, we have to add an input parameter to the resource method. Then using the previously
 defined `getEntry` function, we can filter the relevant entry.
 
-> Note: In our schema, the type of the `filterData` is `CovidData`, which is nullable. Similarly, our resource 
+> Note: In our schema, the type of the `filterData` is `CovidData`, which is nullable. Similarly, our resource
 > method can return nil value.
 
-Now the `Query` type is completed. We now need to define the `Mutation` type. To define mutation type, we use 
-`remote` methods. Similar to how each resource method is mapped to a field in the root `Query` type, each remote 
+Now the `Query` type is completed. We now need to define the `Mutation` type. To define mutation type, we use
+`remote` methods. Similar to how each resource method is mapped to a field in the root `Query` type, each remote
 method in the Ballerina GraphQL service is mapped to a field in the root `Mutation` type.
 
 Let's define a remote method to add an entry to our datasource:
@@ -331,7 +341,7 @@ remote function addEntry(ds:CovidEntry entry) returns CovidData {
 }
 ```
 
-This method requires a `CovidEntry` record as the input. When a remote or resource method has a record type as an 
+This method requires a `CovidEntry` record as the input. When a remote or resource method has a record type as an
 input, it will be mapped to a GraphQL input object type. This is the requirement as per the schema we have.
 
 The complete code for the Ballerina GraphQL service is below:
@@ -367,7 +377,7 @@ That's it! We can run this service now to serve a GraphQL API to our datasource.
 bal run
 ```
 
-Now if we connect to this service using the GraphQL Playground tool, we can see the following generated schema. 
+Now if we connect to this service using the GraphQL Playground tool, we can see the following generated schema.
 
 ![Generated Schema](resources/images/schema-image.png)
 
